@@ -12,7 +12,10 @@ migrate-up:
 
 # Rollback database migrations
 migrate-down:
-  migrate -source internal/infrastructure/database/migrations -database $DATABASE_URL -verbose down
+  migrate -path internal/infrastructure/database/migrations -database $DATABASE_URL -verbose down
+
+migrate-fix v:
+  migrate -path internal/infrastructure/database/migrations -database $DATABASE_URL force {{v}}
 
 sqlc:
   sqlc generate
