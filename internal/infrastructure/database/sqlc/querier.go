@@ -7,12 +7,12 @@ package db
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/google/uuid"
 )
 
 type Querier interface {
-	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
-	GetUserByID(ctx context.Context, id pgtype.UUID) (GetUserByIDRow, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) error
+	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error
 }
 

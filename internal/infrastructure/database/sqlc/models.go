@@ -8,6 +8,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -224,8 +225,8 @@ func (ns NullTicketType) Value() (driver.Value, error) {
 }
 
 type Event struct {
-	ID            pgtype.UUID    `json:"id"`
-	UserID        pgtype.UUID    `json:"user_id"`
+	ID            uuid.UUID      `json:"id"`
+	UserID        uuid.UUID      `json:"user_id"`
 	Type          EventType      `json:"type"`
 	Name          string         `json:"name"`
 	Description   string         `json:"description"`
@@ -243,14 +244,14 @@ type Event struct {
 }
 
 type Image struct {
-	ID      pgtype.UUID `json:"id"`
-	EventID pgtype.UUID `json:"event_id"`
-	Url     string      `json:"url"`
+	ID      uuid.UUID `json:"id"`
+	EventID uuid.UUID `json:"event_id"`
+	Url     string    `json:"url"`
 }
 
 type Ticket struct {
-	ID            pgtype.UUID   `json:"id"`
-	EventID       pgtype.UUID   `json:"event_id"`
+	ID            uuid.UUID     `json:"id"`
+	EventID       uuid.UUID     `json:"event_id"`
 	Invite        pgtype.Bool   `json:"invite"`
 	Type          TicketType    `json:"type"`
 	AccessType    AccessType    `json:"access_type"`
@@ -264,8 +265,8 @@ type Ticket struct {
 }
 
 type User struct {
-	ID           pgtype.UUID        `json:"id"`
-	Email        pgtype.Text        `json:"email"`
+	ID           uuid.UUID          `json:"id"`
+	Email        string             `json:"email"`
 	Password     string             `json:"password"`
 	Verified     pgtype.Bool        `json:"verified"`
 	RegisteredAt pgtype.Timestamptz `json:"registered_at"`

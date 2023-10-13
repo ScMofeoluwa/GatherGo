@@ -26,15 +26,15 @@ CREATE TYPE "stock_type" AS ENUM (
 );
 
 CREATE TABLE "users" (
-  "id" uuid PRIMARY KEY,
-  "email" varchar UNIQUE,
+  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "email" varchar UNIQUE NOT NULL,
   "password" varchar NOT NULL,
   "verified" boolean DEFAULT false,
   "registered_at" timestamptz DEFAULT now()
 );
 
 CREATE TABLE "events" (
-  "id" uuid PRIMARY KEY,
+  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_id" uuid NOT NULL,
   "type" event_type NOT NULL,
   "name" varchar NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE "events" (
 );
 
 CREATE TABLE "tickets" (
-  "id" uuid PRIMARY KEY,
+  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" uuid NOT NULL,
   "invite" boolean DEFAULT false,
   "type" ticket_type NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE "tickets" (
 );
 
 CREATE TABLE "images" (
-  "id" uuid PRIMARY KEY,
+  "id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" uuid NOT NULL,
   "url" varchar NOT NULL
 );

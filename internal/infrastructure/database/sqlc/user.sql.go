@@ -8,40 +8,23 @@ package db
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createUser = `-- name: CreateUser :one
-INSERT INTO "users" ("id", "email", "password", "verified", "registered_at")
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, email, registered_at
+const createUser = `-- name: CreateUser :exec
+INSERT INTO "users" ("email", "password")
+VALUES ($1, $2)
 `
 
 type CreateUserParams struct {
-	ID           pgtype.UUID        `json:"id"`
-	Email        pgtype.Text        `json:"email"`
-	Password     string             `json:"password"`
-	Verified     pgtype.Bool        `json:"verified"`
-	RegisteredAt pgtype.Timestamptz `json:"registered_at"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
-type CreateUserRow struct {
-	ID           pgtype.UUID        `json:"id"`
-	Email        pgtype.Text        `json:"email"`
-	RegisteredAt pgtype.Timestamptz `json:"registered_at"`
-}
-
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
-	row := q.db.QueryRow(ctx, createUser,
-		arg.ID,
-		arg.Email,
-		arg.Password,
-		arg.Verified,
-		arg.RegisteredAt,
-	)
-	var i CreateUserRow
-	err := row.Scan(&i.ID, &i.Email, &i.RegisteredAt)
-	return i, err
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
+	_, err := q.db.Exec(ctx, createUser, arg.Email, arg.Password)
+	return err
 }
 
 const getUserByID = `-- name: GetUserByID :one
@@ -50,13 +33,13 @@ WHERE id =  $1 LIMIT 1
 `
 
 type GetUserByIDRow struct {
-	ID           pgtype.UUID        `json:"id"`
-	Email        pgtype.Text        `json:"email"`
+	ID           uuid.UUID          `json:"id"`
+	Email        string             `json:"email"`
 	Verified     pgtype.Bool        `json:"verified"`
 	RegisteredAt pgtype.Timestamptz `json:"registered_at"`
 }
 
-func (q *Queries) GetUserByID(ctx context.Context, id pgtype.UUID) (GetUserByIDRow, error) {
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error) {
 	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i GetUserByIDRow
 	err := row.Scan(
