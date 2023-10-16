@@ -27,6 +27,32 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 	return err
 }
 
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, email, verified, registered_at, password FROM users
+WHERE email =  $1 LIMIT 1
+`
+
+type GetUserByEmailRow struct {
+	ID           uuid.UUID          `json:"id"`
+	Email        string             `json:"email"`
+	Verified     pgtype.Bool        `json:"verified"`
+	RegisteredAt pgtype.Timestamptz `json:"registered_at"`
+	Password     string             `json:"password"`
+}
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i GetUserByEmailRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Verified,
+		&i.RegisteredAt,
+		&i.Password,
+	)
+	return i, err
+}
+
 const getUserByID = `-- name: GetUserByID :one
 SELECT id, email, verified, registered_at FROM users
 WHERE id =  $1 LIMIT 1

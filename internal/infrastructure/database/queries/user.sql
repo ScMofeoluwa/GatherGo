@@ -6,6 +6,10 @@ VALUES ($1, $2);
 SELECT id, email, verified, registered_at FROM users
 WHERE id =  $1 LIMIT 1;
 
+-- name: GetUserByEmail :one
+SELECT id, email, verified, registered_at, password FROM users
+WHERE email =  $1 LIMIT 1;
+
 -- name: UpdateUser :exec
 UPDATE users
 SET
