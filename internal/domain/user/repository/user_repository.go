@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/ScMofeoluwa/GatherGo/internal/domain/user/entity"
-	sqlc "github.com/ScMofeoluwa/GatherGo/internal/infrastructure/database/sqlc"
+	"github.com/ScMofeoluwa/GatherGo/internal/infrastructure/database/sqlc"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
