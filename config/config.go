@@ -5,7 +5,9 @@ import (
 )
 
 type Config struct {
-	DatabaseURL string `mapstructure:"DATABASE_URL"`
+	DatabaseURL   string `mapstructure:"DATABASE_URL"`
+	RefreshSecret string `mapstructure:"REFRESH_TOKEN_SECRET"`
+	AccessSecret  string `mapstructure:"ACCESS_TOKEN_SECRET"`
 }
 
 func LoadConfig() (config Config, err error) {

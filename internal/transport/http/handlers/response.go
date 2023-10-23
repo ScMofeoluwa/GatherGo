@@ -1,23 +1,23 @@
 package handlers
 
 type ApiResponse struct {
-	Data    interface{} `json:"data"`
-	Message string      `json:"message"`
 	Status  string      `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 func NewApiError(message string) *ApiResponse {
 	return &ApiResponse{
-		Data:    nil,
-		Message: message,
 		Status:  "error",
+		Message: message,
+		Data:    nil,
 	}
 }
 
 func NewApiResponse(data interface{}, message string) *ApiResponse {
 	return &ApiResponse{
-		Data:    data,
-		Message: message,
 		Status:  "success",
+		Message: message,
+		Data:    data,
 	}
 }

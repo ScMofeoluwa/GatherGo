@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/ScMofeoluwa/GatherGo/internal/domain/user/entity"
 	"github.com/ScMofeoluwa/GatherGo/internal/domain/user/repository"
@@ -10,11 +11,15 @@ import (
 )
 
 type UserService struct {
-	repo *repository.UserRepository
+	repo     *repository.UserRepository
+	jwtMaker *util.JWTMaker
 }
 
-func NewUserService(repo *repository.UserRepository) *UserService {
-	return &UserService{repo: repo}
+func NewUserService(repo *repository.UserRepository, jwtMaker *util.JWTMaker) *UserService {
+	return &UserService{
+		repo:     repo,
+		jwtMaker: jwtMaker,
+	}
 }
 
 func (u *UserService) SignUp(ctx context.Context, data *entity.CreateUser) error {
@@ -30,13 +35,17 @@ func (u *UserService) SignUp(ctx context.Context, data *entity.CreateUser) error
 	return nil
 }
 
-func (u *UserService) SignIn(ctx context.Context, data *entity.CreateUser) (string, error) {
+func (u *UserService) SignIn(ctx context.Context, data *entity.CreateUser) (util.TokenPair, error) {
 	user, err := u.repo.GetByEmail(ctx, data.Email)
 	if err != nil {
-		return "", err
+		return util.TokenPair{}, err
 	}
 	if err := util.CheckPassword(user.Password, data.Password); err != nil {
-		return "", errors.New("invalid email or password")
+		return util.TokenPair{}, errors.New("invalid email or password")
 	}
-	return "", nil
+	tokenPair, err := u.jwtMaker.CreateTokenPair(user.Email, time.Hour)
+	if err != nil {
+		return util.TokenPair{}, err
+	}
+	return tokenPair, nil
 }

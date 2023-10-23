@@ -31,7 +31,7 @@ func (a *AuthHandler) SignUp(ctx *gin.Context) {
 		return
 	}
 	if err := a.service.SignUp(ctx, &req); err != nil {
-		ctx.JSON(http.StatusInternalServerError, NewApiError(err.Error()))
+		ctx.JSON(http.StatusBadRequest, NewApiError(err.Error()))
 		return
 	}
 	ctx.JSON(http.StatusCreated, NewApiResponse(nil, "user created successfully"))
@@ -47,5 +47,5 @@ func (a *AuthHandler) SignIn(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, NewApiError(err.Error()))
 		return
 	}
-	ctx.JSON(http.StatusCreated, NewApiResponse(nil, data))
+	ctx.JSON(http.StatusOK, NewApiResponse(data, "login successful"))
 }
