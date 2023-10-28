@@ -52,17 +52,31 @@ func (suite *UserRepoTestSuite) TestCreateCustomer() {
 		Password: "password",
 	}
 
-	err := suite.repository.Create(suite.ctx, user)
-	assert.NoError(t, err)
+	t.Run("success", func(t *testing.T) {
+		err := suite.repository.Create(suite.ctx, user)
+		assert.NoError(t, err)
+	})
+
+	t.Run("email already taken", func(t *testing.T) {
+		err := suite.repository.Create(suite.ctx, user)
+		assert.Error(t, err)
+	})
 }
 
 func (suite *UserRepoTestSuite) TestGetCustomerByEmail() {
 	t := suite.T()
 
-	user, err := suite.repository.GetByEmail(suite.ctx, "test@example.com")
-	assert.NoError(t, err)
-	assert.NotNil(t, user)
-	assert.Equal(t, "test@example.com", user.Email)
+	t.Run("success", func(t *testing.T) {
+		user, err := suite.repository.GetByEmail(suite.ctx, "test@example.com")
+		assert.NoError(t, err)
+		assert.NotNil(t, user)
+		assert.Equal(t, "test@example.com", user.Email)
+	})
+
+	t.Run("user does not exist", func(t *testing.T) {
+		_, err := suite.repository.GetByEmail(suite.ctx, "nonexistent@example.com")
+		assert.Error(t, err)
+	})
 }
 
 func TestUserRepoSuite(t *testing.T) {
