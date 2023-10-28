@@ -11,11 +11,11 @@ import (
 )
 
 type UserService struct {
-	repo     *repository.UserRepository
+	repo     repository.UserRepositoryInterface
 	jwtMaker *util.JWTMaker
 }
 
-func NewUserService(repo *repository.UserRepository, jwtMaker *util.JWTMaker) *UserService {
+func NewUserService(repo repository.UserRepositoryInterface, jwtMaker *util.JWTMaker) *UserService {
 	return &UserService{
 		repo:     repo,
 		jwtMaker: jwtMaker,
