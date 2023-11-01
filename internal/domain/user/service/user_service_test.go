@@ -24,7 +24,7 @@ type UserServiceSuite struct {
 
 func (s *UserServiceSuite) SetupTest() {
 	s.ctx = context.Background()
-	s.mockRepo = &mocks.UserRepositoryInterface{}
+	s.mockRepo = mocks.NewUserRepositoryInterface(s.T())
 	jwtMaker := &util.JWTMaker{}
 	s.userService = NewUserService(s.mockRepo, jwtMaker)
 
@@ -38,7 +38,7 @@ func (s *UserServiceSuite) TestSignUp() {
 	t := s.T()
 
 	t.Run("success", func(t *testing.T) {
-		s.mockRepo.On("Create", mock.Anything, s.testUser).Return(nil).Once()
+		s.mockRepo.EXPECT().Create(mock.Anything, s.testUser).Return(nil).Once()
 		err := s.userService.SignUp(s.ctx, s.testUser)
 		assert.NoError(t, err)
 		s.mockRepo.AssertExpectations(t)
@@ -66,7 +66,7 @@ func (s *UserServiceSuite) TestSignIn() {
 			Verified:     true,
 		}
 
-		s.mockRepo.On("GetByEmail", mock.Anything, s.testUser.Email).Return(mockUser, nil).Once()
+		s.mockRepo.EXPECT().GetByEmail(mock.Anything, s.testUser.Email).Return(mockUser, nil).Once()
 
 		tokenPair, err := s.userService.SignIn(s.ctx, s.testUser)
 		assert.NoError(t, err)
@@ -76,7 +76,7 @@ func (s *UserServiceSuite) TestSignIn() {
 	})
 
 	t.Run("user not found", func(t *testing.T) {
-		s.mockRepo.On("GetByEmail", mock.Anything, s.testUser.Email).Return(nil, errors.New("invalid email or password")).Once()
+		s.mockRepo.EXPECT().GetByEmail(mock.Anything, s.testUser.Email).Return(nil, errors.New("invalid email or password")).Once()
 
 		_, err := s.userService.SignIn(s.ctx, s.testUser)
 		assert.Error(t, err)
@@ -95,7 +95,7 @@ func (s *UserServiceSuite) TestSignIn() {
 			Verified:     true,
 		}
 
-		s.mockRepo.On("GetByEmail", mock.Anything, s.testUser.Email).Return(mockUser, nil).Once()
+		s.mockRepo.EXPECT().GetByEmail(mock.Anything, s.testUser.Email).Return(mockUser, nil).Once()
 
 		_, err := s.userService.SignIn(s.ctx, s.testUser)
 		assert.Error(t, err)

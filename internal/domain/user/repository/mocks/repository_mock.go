@@ -14,6 +14,14 @@ type UserRepositoryInterface struct {
 	mock.Mock
 }
 
+type UserRepositoryInterface_Expecter struct {
+	mock *mock.Mock
+}
+
+func (_m *UserRepositoryInterface) EXPECT() *UserRepositoryInterface_Expecter {
+	return &UserRepositoryInterface_Expecter{mock: &_m.Mock}
+}
+
 // Create provides a mock function with given fields: ctx, user
 func (_m *UserRepositoryInterface) Create(ctx context.Context, user *entity.CreateUser) error {
 	ret := _m.Called(ctx, user)
@@ -26,6 +34,35 @@ func (_m *UserRepositoryInterface) Create(ctx context.Context, user *entity.Crea
 	}
 
 	return r0
+}
+
+// UserRepositoryInterface_Create_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Create'
+type UserRepositoryInterface_Create_Call struct {
+	*mock.Call
+}
+
+// Create is a helper method to define mock.On call
+//   - ctx context.Context
+//   - user *entity.CreateUser
+func (_e *UserRepositoryInterface_Expecter) Create(ctx interface{}, user interface{}) *UserRepositoryInterface_Create_Call {
+	return &UserRepositoryInterface_Create_Call{Call: _e.mock.On("Create", ctx, user)}
+}
+
+func (_c *UserRepositoryInterface_Create_Call) Run(run func(ctx context.Context, user *entity.CreateUser)) *UserRepositoryInterface_Create_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*entity.CreateUser))
+	})
+	return _c
+}
+
+func (_c *UserRepositoryInterface_Create_Call) Return(_a0 error) *UserRepositoryInterface_Create_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *UserRepositoryInterface_Create_Call) RunAndReturn(run func(context.Context, *entity.CreateUser) error) *UserRepositoryInterface_Create_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // GetByEmail provides a mock function with given fields: ctx, email
@@ -54,6 +91,35 @@ func (_m *UserRepositoryInterface) GetByEmail(ctx context.Context, email string)
 	return r0, r1
 }
 
+// UserRepositoryInterface_GetByEmail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByEmail'
+type UserRepositoryInterface_GetByEmail_Call struct {
+	*mock.Call
+}
+
+// GetByEmail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - email string
+func (_e *UserRepositoryInterface_Expecter) GetByEmail(ctx interface{}, email interface{}) *UserRepositoryInterface_GetByEmail_Call {
+	return &UserRepositoryInterface_GetByEmail_Call{Call: _e.mock.On("GetByEmail", ctx, email)}
+}
+
+func (_c *UserRepositoryInterface_GetByEmail_Call) Run(run func(ctx context.Context, email string)) *UserRepositoryInterface_GetByEmail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *UserRepositoryInterface_GetByEmail_Call) Return(_a0 *entity.User, _a1 error) *UserRepositoryInterface_GetByEmail_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserRepositoryInterface_GetByEmail_Call) RunAndReturn(run func(context.Context, string) (*entity.User, error)) *UserRepositoryInterface_GetByEmail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetByID provides a mock function with given fields: ctx, id
 func (_m *UserRepositoryInterface) GetByID(ctx context.Context, id string) (*entity.User, error) {
 	ret := _m.Called(ctx, id)
@@ -80,6 +146,35 @@ func (_m *UserRepositoryInterface) GetByID(ctx context.Context, id string) (*ent
 	return r0, r1
 }
 
+// UserRepositoryInterface_GetByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByID'
+type UserRepositoryInterface_GetByID_Call struct {
+	*mock.Call
+}
+
+// GetByID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+func (_e *UserRepositoryInterface_Expecter) GetByID(ctx interface{}, id interface{}) *UserRepositoryInterface_GetByID_Call {
+	return &UserRepositoryInterface_GetByID_Call{Call: _e.mock.On("GetByID", ctx, id)}
+}
+
+func (_c *UserRepositoryInterface_GetByID_Call) Run(run func(ctx context.Context, id string)) *UserRepositoryInterface_GetByID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *UserRepositoryInterface_GetByID_Call) Return(_a0 *entity.User, _a1 error) *UserRepositoryInterface_GetByID_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserRepositoryInterface_GetByID_Call) RunAndReturn(run func(context.Context, string) (*entity.User, error)) *UserRepositoryInterface_GetByID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Update provides a mock function with given fields: ctx, user
 func (_m *UserRepositoryInterface) Update(ctx context.Context, user *entity.User) error {
 	ret := _m.Called(ctx, user)
@@ -94,13 +189,41 @@ func (_m *UserRepositoryInterface) Update(ctx context.Context, user *entity.User
 	return r0
 }
 
+// UserRepositoryInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
+type UserRepositoryInterface_Update_Call struct {
+	*mock.Call
+}
+
+// Update is a helper method to define mock.On call
+//   - ctx context.Context
+//   - user *entity.User
+func (_e *UserRepositoryInterface_Expecter) Update(ctx interface{}, user interface{}) *UserRepositoryInterface_Update_Call {
+	return &UserRepositoryInterface_Update_Call{Call: _e.mock.On("Update", ctx, user)}
+}
+
+func (_c *UserRepositoryInterface_Update_Call) Run(run func(ctx context.Context, user *entity.User)) *UserRepositoryInterface_Update_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*entity.User))
+	})
+	return _c
+}
+
+func (_c *UserRepositoryInterface_Update_Call) Return(_a0 error) *UserRepositoryInterface_Update_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *UserRepositoryInterface_Update_Call) RunAndReturn(run func(context.Context, *entity.User) error) *UserRepositoryInterface_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewUserRepositoryInterface creates a new instance of UserRepositoryInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewUserRepositoryInterface(t interface {
 	mock.TestingT
 	Cleanup(func())
-},
-) *UserRepositoryInterface {
+}) *UserRepositoryInterface {
 	mock := &UserRepositoryInterface{}
 	mock.Mock.Test(t)
 
