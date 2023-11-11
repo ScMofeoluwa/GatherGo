@@ -10,6 +10,11 @@ import (
 	"github.com/ScMofeoluwa/GatherGo/internal/util"
 )
 
+var (
+	ErrEmailAlreadyExists = errors.New("email already exists")
+	ErrInvalidDetails     = errors.New("invalid email or password")
+)
+
 type UserService struct {
 	repo     repository.UserRepositoryInterface
 	jwtMaker *util.JWTMaker
@@ -23,14 +28,24 @@ func NewUserService(repo repository.UserRepositoryInterface, jwtMaker *util.JWTM
 }
 
 func (u *UserService) SignUp(ctx context.Context, data *entity.CreateUser) error {
-	hashedPassword, err := util.HashPassword(data.Password)
+	exists, err := u.repo.GetByEmail(ctx, data.Email)
 	if err != nil {
+		if errors.Is(err, repository.ErrUserNotFound) {
+			hashedPassword, err := util.HashPassword(data.Password)
+			if err != nil {
+				return err
+			}
+
+			data.Password = hashedPassword
+			if err := u.repo.Create(ctx, data); err != nil {
+				return err
+			}
+			return nil
+		}
 		return err
 	}
-
-	data.Password = hashedPassword
-	if err := u.repo.Create(ctx, data); err != nil {
-		return err
+	if exists != nil {
+		return ErrEmailAlreadyExists
 	}
 	return nil
 }
@@ -41,7 +56,7 @@ func (u *UserService) SignIn(ctx context.Context, data *entity.CreateUser) (util
 		return util.TokenPair{}, err
 	}
 	if err := util.CheckPassword(user.Password, data.Password); err != nil {
-		return util.TokenPair{}, errors.New("invalid email or password")
+		return util.TokenPair{}, ErrInvalidDetails
 	}
 	tokenPair, err := u.jwtMaker.CreateTokenPair(user.Email, time.Hour)
 	if err != nil {

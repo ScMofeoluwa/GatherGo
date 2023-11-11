@@ -10,6 +10,8 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+var ErrUserNotFound = errors.New("user not found")
+
 type UserRepository struct {
 	db *sqlc.Queries
 }
@@ -26,11 +28,10 @@ func (u *UserRepository) Create(ctx context.Context, user *entity.CreateUser) er
 		Password: user.Password,
 	}
 
-	err := u.db.CreateUser(ctx, params)
-	if sqlc.ErrorCode(err) == sqlc.UniqueViolation {
-		return errors.New("user already exists")
+	if err := u.db.CreateUser(ctx, params); err != nil {
+		return err
 	}
-	return err
+	return nil
 }
 
 func (u *UserRepository) GetByID(ctx context.Context, id string) (*entity.User, error) {
@@ -55,7 +56,7 @@ func (u *UserRepository) GetByEmail(ctx context.Context, email string) (*entity.
 	user, err := u.db.GetUserByEmail(ctx, email)
 	if err != nil {
 		if errors.Is(err, sqlc.ErrRecordNotFound) {
-			return nil, errors.New("invalid email or password")
+			return nil, ErrUserNotFound
 		}
 		return nil, err
 	}
