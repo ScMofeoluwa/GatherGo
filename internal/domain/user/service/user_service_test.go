@@ -2,13 +2,14 @@ package service
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
 	"github.com/ScMofeoluwa/GatherGo/internal/domain/user/entity"
+	"github.com/ScMofeoluwa/GatherGo/internal/domain/user/repository"
 	"github.com/ScMofeoluwa/GatherGo/internal/domain/user/repository/mocks"
 	"github.com/ScMofeoluwa/GatherGo/internal/util"
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
@@ -18,7 +19,7 @@ type UserServiceSuite struct {
 	suite.Suite
 	ctx         context.Context
 	mockRepo    *mocks.UserRepositoryInterface
-	userService *UserService
+	userService UserServiceInterface
 	testUser    *entity.CreateUser
 }
 
@@ -38,6 +39,7 @@ func (s *UserServiceSuite) TestSignUp() {
 	t := s.T()
 
 	t.Run("success", func(t *testing.T) {
+		s.mockRepo.EXPECT().GetByEmail(mock.Anything, s.testUser.Email).Return(nil, repository.ErrUserNotFound).Once()
 		s.mockRepo.EXPECT().Create(mock.Anything, s.testUser).Return(nil).Once()
 		err := s.userService.SignUp(s.ctx, s.testUser)
 		assert.NoError(t, err)
@@ -45,7 +47,8 @@ func (s *UserServiceSuite) TestSignUp() {
 	})
 
 	t.Run("error on signup", func(t *testing.T) {
-		s.mockRepo.On("Create", mock.Anything, s.testUser).Return(errors.New("database error")).Once()
+		s.mockRepo.EXPECT().GetByEmail(mock.Anything, s.testUser.Email).Return(nil, repository.ErrUserNotFound).Once()
+		s.mockRepo.EXPECT().Create(mock.Anything, s.testUser).Return(errors.New("database error")).Once()
 		err := s.userService.SignUp(s.ctx, s.testUser)
 		assert.Error(t, err)
 		s.mockRepo.AssertExpectations(t)
@@ -76,6 +79,15 @@ func (s *UserServiceSuite) TestSignIn() {
 	})
 
 	t.Run("user not found", func(t *testing.T) {
+		s.mockRepo.EXPECT().GetByEmail(mock.Anything, s.testUser.Email).Return(nil, errors.New("user not found")).Once()
+
+		_, err := s.userService.SignIn(s.ctx, s.testUser)
+		assert.Error(t, err)
+		assert.Equal(t, "user not found", err.Error())
+		s.mockRepo.AssertExpectations(t)
+	})
+
+	t.Run("invalid login credentials", func(t *testing.T) {
 		s.mockRepo.EXPECT().GetByEmail(mock.Anything, s.testUser.Email).Return(nil, errors.New("invalid email or password")).Once()
 
 		_, err := s.userService.SignIn(s.ctx, s.testUser)

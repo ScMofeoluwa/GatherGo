@@ -18,7 +18,7 @@ type UserRepository struct {
 
 var _ UserRepositoryInterface = &UserRepository{}
 
-func NewUserRepository(db *sqlc.Queries) *UserRepository {
+func NewUserRepository(db *sqlc.Queries) UserRepositoryInterface {
 	return &UserRepository{db: db}
 }
 

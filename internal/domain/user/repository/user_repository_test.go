@@ -16,7 +16,7 @@ import (
 type UserRepoTestSuite struct {
 	suite.Suite
 	pgContainer *testutils.PostgresContainer
-	repository  *UserRepository
+	repository  UserRepositoryInterface
 	ctx         context.Context
 }
 

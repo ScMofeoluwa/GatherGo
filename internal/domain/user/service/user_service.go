@@ -20,7 +20,9 @@ type UserService struct {
 	jwtMaker *util.JWTMaker
 }
 
-func NewUserService(repo repository.UserRepositoryInterface, jwtMaker *util.JWTMaker) *UserService {
+var _ UserServiceInterface = &UserService{}
+
+func NewUserService(repo repository.UserRepositoryInterface, jwtMaker *util.JWTMaker) UserServiceInterface {
 	return &UserService{
 		repo:     repo,
 		jwtMaker: jwtMaker,
